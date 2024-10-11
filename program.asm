@@ -1,3 +1,8 @@
+; ubuntu shell
+; nasm -f elf -o program.o program.asm
+; ld -m elf_i386 program.o -o program
+; ./program
+
 segment .data
     prompt_msg: db "Enter a signed integer number (up to 4 digits): ", 0
     prompt_len: equ $ - prompt_msg
@@ -5,13 +10,13 @@ segment .data
     value_len: equ $ - value_msg
     half_msg: db "Half of the number entered is ", 0
     half_len: equ $ - half_msg
-    ; double_msg: db "Double of the entered number is ", 0
-    ; double_len: equ $ - double_msg
+    double_msg: db "Double of the entered number is ", 0
+    double_len: equ $ - double_msg
 
 segment .bss
     input_val: resb 6
     half_val: resb 6
-    ; double_val: resb 7
+    double_val: resb 7
 
 section .text
     global _start
@@ -76,28 +81,27 @@ convert_loop:
 
 convert_loop_end:
 
-    ; mov     ecx, eax
+    mov     ecx, eax
 
     sar     eax, 1              ; divide sum by 2
-    ; sal     ecx, 1
+    sal     ecx, 1
 
     lea     esi, [half_val]
-    ; lea     edi, [double_val]
+    lea     edi, [double_val]
     add     esi, 5
-    ; add     edi, 6
+    add     edi, 6
     mov     byte [esi], 0xA
-    ; mov     byte [edi], 0xA
+    mov     byte [edi], 0xA
     dec     esi
-    ; dec     edi
+    dec     edi
     mov     byte [esi], 48
-    ; mov     byte [edi], 48
+    mov     byte [edi], 48
 
     mov     ebx, 10
     
 half_loop:
     cmp     eax, 0
-    ; je      transition
-    je      half_loop_end
+    je      transition
     
     mov     edx, 0
     idiv    ebx
@@ -107,24 +111,24 @@ half_loop:
 
     dec     esi
 
-    jmp half_loop
+    jmp     half_loop
 
-; transition:
-;     mov     eax, ecx
+transition:
+    mov     eax, ecx
 
-; double_loop:
-;     cmp     eax, 0
-;     je      half_loop_end
+double_loop:
+    cmp     eax, 0
+    je      half_loop_end
 
-;     mov     edx, 0
-;     idiv    ebx
+    mov     edx, 0
+    idiv    ebx
 
-;     add     edx, 48
-;     mov     byte [edi], dl
+    add     edx, 48
+    mov     byte [edi], dl
 
-;     dec     edi
+    dec     edi
 
-;     jmp     double_loop
+    jmp     double_loop
 
 half_loop_end:
 
@@ -132,7 +136,7 @@ half_loop_end:
     cmp     byte [input_val], 45
     jne     sign_1
     mov     byte [esi], 45
-    ; mov     byte [edi], 45
+    mov     byte [edi], 45
 
 sign_1:
 
@@ -142,17 +146,17 @@ sign_1:
     mov     edx, 6
     int     0x80
 
-    ; mov     eax, 4
-    ; mov     ebx, 1
-    ; mov     ecx, double_msg
-    ; mov     edx, double_len
-    ; int     0x80
+    mov     eax, 4
+    mov     ebx, 1
+    mov     ecx, double_msg
+    mov     edx, double_len
+    int     0x80
 
-    ; mov     eax, 4
-    ; mov     ebx, 1
-    ; mov     ecx, double_val
-    ; mov     edx, 7
-    ; int     0x80
+    mov     eax, 4
+    mov     ebx, 1
+    mov     ecx, double_val
+    mov     edx, 7
+    int     0x80
 
 exit:
     mov     eax, 1
